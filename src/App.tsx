@@ -48,7 +48,7 @@ function App() {
     const unsubscribe = blink.auth.onAuthStateChanged((state) => {
       setUser(state.user)
       if (state.user) {
-        loadData()
+        loadData(state.user.id)
       } else {
         setLoading(false)
       }
@@ -56,11 +56,11 @@ function App() {
     return unsubscribe
   }, [])
 
-  const loadData = async () => {
+  const loadData = async (userId: string) => {
     try {
       const [goalsData, todosData] = await Promise.all([
-        blink.db.goals.list({ where: { user_id: user?.id || '' } }),
-        blink.db.todos.list({ where: { user_id: user?.id || '' }, orderBy: { order_index: 'asc' } })
+        blink.db.goals.list({ where: { user_id: userId } }),
+        blink.db.todos.list({ where: { user_id: userId }, orderBy: { order_index: 'asc' } })
       ])
       setGoals(goalsData)
       setTodos(todosData)
